@@ -1,3 +1,9 @@
+# [v1.0.1](https://github.com/Muriel-Salvan/keepass_kpscript/compare/v1.0.0...v1.0.1) (2021-06-30 15:29:15)
+
+### Patches
+
+* [Fail if no authentication method is provided](https://github.com/Muriel-Salvan/keepass_kpscript/commit/7178863234782aa3fd46d9a2ea9263d9344b465f)
+
 # [v0.0.1](https://github.com/Muriel-Salvan/keepass_kpscript/compare/...v0.0.1) (2021-06-30 10:50:35)
 
 ### Patches
