@@ -19,6 +19,11 @@ describe KeepassKpscript::Database do
       expect(database.password_for('MyEntryTitle')).to eq 'MyEntryPassword'
     end
 
+    it 'fails if no authentication mechanism is provided' do
+      expect_calls_to_kpscript []
+      expect { kpscript.open('/path/to/my_db.kdbx') }.to raise_error 'Please specify at least one of password, password_enc or key_file arguments'
+    end
+
     it 'fails with an error silencing secrets when KPScript returns a non-zero exit status' do
       expect_calls_to_kpscript [
         [

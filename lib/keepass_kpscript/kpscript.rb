@@ -19,7 +19,8 @@ module KeepassKpscript
       @debug = debug
     end
 
-    # Open a database using this KPScript instance
+    # Open a database using this KPScript instance.
+    # At least 1 of password, password_enc or key_file is mandatory.
     #
     # Parameters::
     # * *database_file* (String): Path to the database file

@@ -10,6 +10,7 @@ module KeepassKpscript
   class Database
 
     # Constructor
+    # At least 1 of password, password_enc or key_file is mandatory.
     #
     # Parameters::
     # * *kpscript* (Kpscript): The KPScript instance handling this database
@@ -23,6 +24,7 @@ module KeepassKpscript
       @password = password
       @password_enc = password_enc
       @key_file = key_file
+      raise 'Please specify at least one of password, password_enc or key_file arguments' if @password.nil? && @password_enc.nil? && @key_file.nil?
     end
 
     # Securely select field values from entries.
