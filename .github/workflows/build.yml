@@ -22,7 +22,7 @@ jobs:
         run: bundle exec rspec --format documentation
 
       - name: Test packaging
-        run: bundle exec gem build secret_string.gemspec
+        run: bundle exec gem build keepass_kpscript.gemspec
 
   semantic_release:
     needs: test
