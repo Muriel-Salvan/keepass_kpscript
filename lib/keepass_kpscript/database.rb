@@ -15,9 +15,9 @@ module KeepassKpscript
     # Parameters::
     # * *kpscript* (Kpscript): The KPScript instance handling this database
     # * *database_file* (String): Database file path
-    # * *password* (String or nil): Password opening the database, or nil if none [default: nil].
-    # * *password_enc* (String or nil): Encrypted password opening the database, or nil if none [default: nil].
-    # * *key_file* (String or nil): Key file path opening the database, or nil if none [default: nil].
+    # * *password* (String, SecretString or nil): Password opening the database, or nil if none [default: nil].
+    # * *password_enc* (String, SecretString or nil): Encrypted password opening the database, or nil if none [default: nil].
+    # * *key_file* (String, SecretString or nil): Key file path opening the database, or nil if none [default: nil].
     def initialize(kpscript, database_file, password: nil, password_enc: nil, key_file: nil)
       @kpscript = kpscript
       @database_file = database_file
@@ -78,7 +78,7 @@ module KeepassKpscript
     #
     # Parameters::
     # * *select* (Select): The entries selector
-    # * *fields* (Hash<String or Symbol, String>): Set of { field name => field value } to be set [default: {}]
+    # * *fields* (Hash<String or Symbol, String or SecretString>): Set of { field name => field value } to be set [default: {}]
     # * *icon_idx* (Integer or nil): Set the icon index, or nil if none [default: nil]
     # * *custom_icon_idx* (Integer or nil): Set the custom icon index, or nil if none [default: nil]
     # * *expires* (Boolean or nil): Edit the expires flag, or nil to leave it untouched [default: nil]
@@ -96,7 +96,9 @@ module KeepassKpscript
       args = [
         '-c:EditEntry',
         select.to_s
-      ] + fields.map { |field_name, field_value| "-set-#{field_name}:\"#{field_value}\"" }
+      ] + fields.map do |field_name, field_value|
+        SecretString.new("-set-#{field_name}:\"#{field_value.to_unprotected}\"", silenced_str: "-set-#{field_name}:\"#{field_value}\"")
+      end
       args << "-setx-Icon:#{icon_idx}" if icon_idx
       args << "-setx-CustomIcon:#{custom_icon_idx}" if custom_icon_idx
       args << "-setx-Expires:#{expires ? 'true' : 'false'}" unless expires.nil?
@@ -172,9 +174,13 @@ module KeepassKpscript
       resulting_stdout = nil
       begin
         kdbx_args = ["\"#{@database_file}\""]
-        kdbx_args << SecretString.new("-pw:\"#{@password}\"", silenced_str: '-pw:"XXXXX"') if @password
-        kdbx_args << SecretString.new("-pw-enc:\"#{@password_enc}\"", silenced_str: '-pw-env:"XXXXX"') if @password_enc
-        kdbx_args << SecretString.new("-keyfile:\"#{@key_file}\"", silenced_str: '-keyfile:"XXXXX"') if @key_file
+        {
+          'pw' => @password,
+          'pw-enc' => @password_enc,
+          'keyfile' => @key_file
+        }.each do |arg, var|
+          kdbx_args << SecretString.new("-#{arg}:\"#{var.to_unprotected}\"", silenced_str: "-#{arg}:\"#{var.is_a?(SecretString) ? var.to_s : 'XXXXX'}\"") if var
+        end
         resulting_stdout = @kpscript.run(kdbx_args + args.flatten)
       ensure
         # Make sure we erase secrets

@@ -136,6 +136,7 @@ describe KeepassKpscript::Database do
     # All edit entries test cases
     {
       { fields: { Field: 'Value' } } => '-set-Field:"Value"',
+      { fields: { Field: SecretString.new('Value') } } => '-set-Field:"Value"',
       { fields: { Field1: 'Value1', Field2: 'Value2' } } => '-set-Field1:"Value1" -set-Field2:"Value2"',
       { icon_idx: 7 } => '-setx-Icon:7',
       { custom_icon_idx: 11 } => '-setx-CustomIcon:11',

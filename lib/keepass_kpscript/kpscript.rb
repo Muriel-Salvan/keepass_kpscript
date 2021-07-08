@@ -24,9 +24,9 @@ module KeepassKpscript
     #
     # Parameters::
     # * *database_file* (String): Path to the database file
-    # * *password* (String or nil): Password opening the database, or nil if none [default: nil].
-    # * *password_enc* (String or nil): Encrypted password opening the database, or nil if none [default: nil].
-    # * *key_file* (String or nil): Key file path opening the database, or nil if none [default: nil].
+    # * *password* (String, SecretString or nil): Password opening the database, or nil if none [default: nil].
+    # * *password_enc* (String, SecretString or nil): Encrypted password opening the database, or nil if none [default: nil].
+    # * *key_file* (String, SecretString or nil): Key file path opening the database, or nil if none [default: nil].
     # Result::
     # * Database: The database
     def open(database_file, password: nil, password_enc: nil, key_file: nil)
@@ -55,7 +55,7 @@ module KeepassKpscript
       begin
         tmp_database = self.open(tmp_database_file, password: 'pass_encryptor')
         selector = select.fields(Title: 'pass_encryptor')
-        tmp_database.edit_entries(selector, fields: { Password: password.to_unprotected })
+        tmp_database.edit_entries(selector, fields: { Password: password })
         password_enc = tmp_database.entries_string(selector, 'URL', spr: true).first
       ensure
         File.unlink tmp_database_file
