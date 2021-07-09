@@ -1,3 +1,9 @@
+# [v1.1.0](https://github.com/Muriel-Salvan/keepass_kpscript/compare/v1.0.1...v1.1.0) (2021-07-09 16:10:11)
+
+### Features
+
+* [[Feature] [#1] Support secret strings as input for any possible secret to protect them from logs and exceptions output](https://github.com/Muriel-Salvan/keepass_kpscript/commit/1de9d2e3d5e3445f8a5cfe987428f74145a7e4ba)
+
 # [v1.0.1](https://github.com/Muriel-Salvan/keepass_kpscript/compare/v1.0.0...v1.0.1) (2021-06-30 15:29:15)
 
 ### Patches
