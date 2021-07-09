@@ -26,6 +26,23 @@ describe KeepassKpscript::Kpscript do
       expect(kpscript.encrypt_password('MyPassword')).to eq 'ENCRYPTED_PASSWORD'
     end
 
+    it 'encrypts passwords using SecretString' do
+      expect_calls_to_kpscript [
+        [
+          '/path/to/KPScript.exe "/tmp/keepass_kpscript.tmp.kdbx" -pw:"pass_encryptor" -c:EditEntry -ref-Title:"pass_encryptor" -set-Password:"MyPassword"',
+          'OK: Operation completed successfully.'
+        ],
+        [
+          '/path/to/KPScript.exe "/tmp/keepass_kpscript.tmp.kdbx" -pw:"pass_encryptor" -c:GetEntryString -ref-Title:"pass_encryptor" -Field:"URL" -Spr',
+          <<~EO_STDOUT
+            ENCRYPTED_PASSWORD
+            OK: Operation completed successfully.
+          EO_STDOUT
+        ]
+      ]
+      expect(kpscript.encrypt_password(SecretString.new('MyPassword'))).to eq 'ENCRYPTED_PASSWORD'
+    end
+
     it 'opens a database with a password' do
       expect_calls_to_kpscript [
         [
@@ -37,6 +54,19 @@ describe KeepassKpscript::Kpscript do
         ]
       ]
       expect(kpscript.open('/path/to/my_db.kdbx', password: 'MyPassword').password_for('MyEntryTitle')).to eq 'MyEntryPassword'
+    end
+
+    it 'opens a database with a password using SecretString' do
+      expect_calls_to_kpscript [
+        [
+          '/path/to/KPScript.exe "/path/to/my_db.kdbx" -pw:"MyPassword" -c:GetEntryString -ref-Title:"MyEntryTitle" -Field:"Password"',
+          <<~EO_STDOUT
+            MyEntryPassword
+            OK: Operation completed successfully.
+          EO_STDOUT
+        ]
+      ]
+      expect(kpscript.open('/path/to/my_db.kdbx', password: SecretString.new('MyPassword')).password_for('MyEntryTitle')).to eq 'MyEntryPassword'
     end
 
     it 'opens a database with an encrypted password' do
@@ -89,6 +119,19 @@ describe KeepassKpscript::Kpscript do
         ]
       ]
       expect(kpscript.open('/path/to/my_db.kdbx', password_enc: 'MyEncryptedPassword', key_file: '/path/to/key_file').password_for('MyEntryTitle')).to eq 'MyEntryPassword'
+    end
+
+    it 'opens a database with a key file and encrypted password using SecretStrings' do
+      expect_calls_to_kpscript [
+        [
+          '/path/to/KPScript.exe "/path/to/my_db.kdbx" -pw-enc:"MyEncryptedPassword" -keyfile:"/path/to/key_file" -c:GetEntryString -ref-Title:"MyEntryTitle" -Field:"Password"',
+          <<~EO_STDOUT
+            MyEntryPassword
+            OK: Operation completed successfully.
+          EO_STDOUT
+        ]
+      ]
+      expect(kpscript.open('/path/to/my_db.kdbx', password_enc: SecretString.new('MyEncryptedPassword'), key_file: SecretString.new('/path/to/key_file')).password_for('MyEntryTitle')).to eq 'MyEntryPassword'
     end
 
     it 'gives a selector' do
