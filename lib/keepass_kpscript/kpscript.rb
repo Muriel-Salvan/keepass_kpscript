@@ -30,7 +30,7 @@ module KeepassKpscript
     # Result::
     # * Database: The database
     def open(database_file, password: nil, password_enc: nil, key_file: nil)
-      Database.new(self, database_file, password: password, password_enc: password_enc, key_file: key_file)
+      Database.new(self, database_file, password:, password_enc:, key_file:)
     end
 
     # Shortcut to get easily access to selectors

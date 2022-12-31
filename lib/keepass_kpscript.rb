@@ -14,7 +14,7 @@ module KeepassKpscript
     # Result::
     # * Kpscript: A KPScript instance
     def use(cmd, debug: false)
-      Kpscript.new(cmd, debug: debug)
+      Kpscript.new(cmd, debug:)
     end
 
   end

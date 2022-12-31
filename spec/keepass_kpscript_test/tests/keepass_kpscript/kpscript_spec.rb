@@ -2,7 +2,7 @@ describe KeepassKpscript::Kpscript do
 
   shared_examples 'a kpscript instance' do
 
-    subject(:kpscript) { KeepassKpscript.use('/path/to/KPScript.exe', debug: debug) }
+    subject(:kpscript) { KeepassKpscript.use('/path/to/KPScript.exe', debug:) }
 
     it 'gives an instance wrapping a KPScript installation' do
       expect_calls_to_kpscript [['/path/to/KPScript.exe -example-arg', 'OK: Operation completed successfully.']]
@@ -12,11 +12,11 @@ describe KeepassKpscript::Kpscript do
     it 'encrypts passwords' do
       expect_calls_to_kpscript [
         [
-          '/path/to/KPScript.exe "/tmp/keepass_kpscript.tmp.kdbx" -pw:"pass_encryptor" -c:EditEntry -ref-Title:"pass_encryptor" -set-Password:"MyPassword"',
+          "/path/to/KPScript.exe \"#{Dir.tmpdir}/keepass_kpscript.tmp.kdbx\" -pw:\"pass_encryptor\" -c:EditEntry -ref-Title:\"pass_encryptor\" -set-Password:\"MyPassword\"",
           'OK: Operation completed successfully.'
         ],
         [
-          '/path/to/KPScript.exe "/tmp/keepass_kpscript.tmp.kdbx" -pw:"pass_encryptor" -c:GetEntryString -ref-Title:"pass_encryptor" -Field:"URL" -Spr',
+          "/path/to/KPScript.exe \"#{Dir.tmpdir}/keepass_kpscript.tmp.kdbx\" -pw:\"pass_encryptor\" -c:GetEntryString -ref-Title:\"pass_encryptor\" -Field:\"URL\" -Spr",
           <<~EO_STDOUT
             ENCRYPTED_PASSWORD
             OK: Operation completed successfully.
@@ -29,11 +29,11 @@ describe KeepassKpscript::Kpscript do
     it 'encrypts passwords using SecretString' do
       expect_calls_to_kpscript [
         [
-          '/path/to/KPScript.exe "/tmp/keepass_kpscript.tmp.kdbx" -pw:"pass_encryptor" -c:EditEntry -ref-Title:"pass_encryptor" -set-Password:"MyPassword"',
+          "/path/to/KPScript.exe \"#{Dir.tmpdir}/keepass_kpscript.tmp.kdbx\" -pw:\"pass_encryptor\" -c:EditEntry -ref-Title:\"pass_encryptor\" -set-Password:\"MyPassword\"",
           'OK: Operation completed successfully.'
         ],
         [
-          '/path/to/KPScript.exe "/tmp/keepass_kpscript.tmp.kdbx" -pw:"pass_encryptor" -c:GetEntryString -ref-Title:"pass_encryptor" -Field:"URL" -Spr',
+          "/path/to/KPScript.exe \"#{Dir.tmpdir}/keepass_kpscript.tmp.kdbx\" -pw:\"pass_encryptor\" -c:GetEntryString -ref-Title:\"pass_encryptor\" -Field:\"URL\" -Spr",
           <<~EO_STDOUT
             ENCRYPTED_PASSWORD
             OK: Operation completed successfully.
