@@ -1,3 +1,9 @@
+# [v1.1.1](https://github.com/Muriel-Salvan/keepass_kpscript/compare/v1.1.0...v1.1.1) (2022-12-31 12:36:42)
+
+### Patches
+
+* [Migrated to Ruby 3.1 - Support for 2.7 dropped](https://github.com/Muriel-Salvan/keepass_kpscript/commit/a4d1b47e93aa262e1190832ec151f35b03388ad1)
+
 # [v1.1.0](https://github.com/Muriel-Salvan/keepass_kpscript/compare/v1.0.1...v1.1.0) (2021-07-09 16:10:11)
 
 ### Features
