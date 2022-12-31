@@ -2,7 +2,7 @@ describe KeepassKpscript::Select do
 
   shared_examples 'a selector' do
 
-    subject(:selector) { KeepassKpscript.use('/path/to/KPScript.exe', debug: debug).select }
+    subject(:selector) { KeepassKpscript.use('/path/to/KPScript.exe', debug:).select }
 
     {
       proc { |s| s.fields(Field: 'Value') } => '-ref-Field:"Value"',

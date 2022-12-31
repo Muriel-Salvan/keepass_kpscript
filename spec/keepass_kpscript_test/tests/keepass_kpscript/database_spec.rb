@@ -4,7 +4,7 @@ describe KeepassKpscript::Database do
 
     subject(:database) { kpscript.open('/path/to/my_db.kdbx', password: 'MyPassword') }
 
-    let(:kpscript) { KeepassKpscript.use('/path/to/KPScript.exe', debug: debug) }
+    let(:kpscript) { KeepassKpscript.use('/path/to/KPScript.exe', debug:) }
 
     it 'gets a simple password for an entry title' do
       expect_calls_to_kpscript [
@@ -187,7 +187,7 @@ describe KeepassKpscript::Database do
           ]
         ]
         expect { kpscript.open(database_file, password: 'MyPassword').detach_bins(copy_to_dir: bins_dir) }.not_to raise_error
-        expect(File.exist?(bins_dir)).to eq true
+        expect(File.exist?(bins_dir)).to be true
         # Check that no database copy is remaining
         expect(Dir.glob("#{bins_dir}/*")).to eq []
       ensure
